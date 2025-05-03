@@ -13,11 +13,17 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // 2) Configurar CORS
-app.use(cors({
-  origin: 'http://localhost:5173',        // tu frontend en dev
-  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
-  allowedHeaders: ['Content-Type','Authorization']
-}));
+const corsOptions = {
+  origin: function (origin, callback) {
+    if(whileList.includes(origin, callback)) {
+      callback(null, true); // Permitir el origen
+    } else {
+      callback(new Error('No permitido por CORS'));
+    }
+  }
+}
+
+app.use(cors(corsOptions)); // Aplicar CORS a todas las rutas
 
 // 3) Conectar a MongoDB y montar rutas
 connectDB()
