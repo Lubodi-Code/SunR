@@ -18,7 +18,8 @@ const corsOptions = {
     if(whileList.includes(origin, callback)) {
       callback(null, true); // Permitir el origen
     } else {
-      callback(new Error('No permitido por CORS aquí')); // Bloquear el origen
+      callback(new Error('No permitido por CORS aquí'));
+      console.log(origin); // Bloquear el origen
     }
   }
 }
