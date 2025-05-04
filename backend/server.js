@@ -12,23 +12,33 @@ const PORT = process.env.PORT || 3000;
 // 1) Middlewares globales
 app.use(express.json());
 
-const whitelist = [process.env.URL_FRONTEND]; // URL del frontend
-if(process.argv[2] === '--postman'){
-    whitelist.push(undefined);
+
+// 1️⃣ Armar la whitelist con EXACTAMENTE tu dominio de Front
+const whitelist = [
+  process.env.URL_FRONTEND,             // e.g. 'https://sunrfrontend.vercel.app'
+  'http://localhost:5173'               // para tu dev local
+]
+
+// 2️⃣ Opciones de CORS que cubran todas las rutas y el preflight
+const corsOptions = {
+  origin: (origin, callback) => {
+    // permitir si no viene origin (Postman, server2server) o si está en la whitelist
+    if (!origin || whitelist.includes(origin)) {
+      return callback(null, true)
+    }
+    callback(new Error('Not allowed by CORS'))
+  },
+  credentials: true
 }
 
-const constOptions = {
-  origin: function (origin, callback) {
-      if (whitelist.includes(origin)) {
-          callback(null, true);
-      } else {
-          callback(new Error('Not allowed by CORS '));
-          console.log(colors.red.bgRed('No permitido por CORS'));
-      }
-  }
-}
+// 3️⃣ Aplica CORS a todas las peticiones…
+app.use(cors(corsOptions))
+// …y maneja el OPTIONS (preflight) también
+app.options('*', cors(corsOptions))
 
-app.use(cors(constOptions)); // Aplicar CORS a todas las rutas
+// 4️⃣ (Opcional) Atrapa el favicon para que no devuelva 404
+app.get('/favicon.ico', (req, res) => res.status(204).end())
+
 
 // 3) Conectar a MongoDB y montar rutas
 connectDB()
