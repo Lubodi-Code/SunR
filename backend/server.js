@@ -15,8 +15,8 @@ app.use(express.json());
 
 // 1️⃣ Armar la whitelist con EXACTAMENTE tu dominio de Front
 const whitelist = [
-  process.env.URL_FRONTEND,             // e.g. 'https://sunrfrontend.vercel.app'
-  'http://localhost:5173'               // para tu dev local
+  process.env.URL_FRONTEND,     
+  "https://sunrbackend.vercel.app"        // e.g. 'https://sunrfrontend.vercel.app'        // para tu dev local
 ]
 
 // 2️⃣ Opciones de CORS que cubran todas las rutas y el preflight
