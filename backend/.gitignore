@@ -4,5 +4,5 @@ node_modules/
 # Ignorar credenciales
 .env
 
-
+.vercel.json
 # Ignorar archivos de compilación
