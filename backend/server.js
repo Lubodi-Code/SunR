@@ -35,17 +35,7 @@ app.use(cors(corsOptions));
 // 4️⃣ Evita 404 en /favicon.ico
 app.get('/favicon.ico', (req, res) => res.status(204).end());
 
-// 5️⃣ Endpoint para saber tu IP de salida
-app.get('/ip', async (req, res) => {
-  try {
-    const ip = await fetch('https://api.ipify.org').then(r => r.text());
-    console.log('📡 Mi IP de salida es:', ip);
-    res.send(`IP: ${ip}`);
-  } catch (e) {
-    console.error('Error obteniendo IP:', e);
-    res.status(500).send('Error interno + ' + e.message);
-  }
-});
+
 
 // 6) Conectar a MongoDB y montar rutas
 connectDB()
@@ -54,22 +44,14 @@ connectDB()
     app.use('/api', questionRoutes);
     app.use('/api', rankingRoutes);
 
-    app.get('/', async (req, res) => {
-    
-      try {
-        const ip = await fetch('https://api.ipify.org').then(r => r.text());
-        console.log('📡 Mi IP de salida es:', ip);
-        res.send(`IP: ${ip}`);
-      } catch (e) {
-        console.error('Error obteniendo IP:', e);
-        res.status(500).send('Error interno + ' + e.message);
-      }
+    app.get('/', (req, res) => {
+      res.send('API de Quiz Médico en funcionamiento');
     });
 
     app.listen(PORT, () => {
       console.log(`🚀 Servidor arrancado en puerto ${PORT}`);
 
-
+      
     });
   })
   .catch(err => {
