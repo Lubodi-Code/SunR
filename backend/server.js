@@ -1,6 +1,7 @@
 require('dotenv').config();               // Cargar .env
+const fetch = require('node-fetch');      // <-- importa fetch
 const express = require('express');
-const cors = require('cors');             // Importar cors
+const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const questionRoutes = require('./routes/questionRoutes');
@@ -12,47 +13,51 @@ const PORT = process.env.PORT || 3000;
 // 1) Middlewares globales
 app.use(express.json());
 
-
-// 1️⃣ Armar la whitelist con EXACTAMENTE tu dominio de Front
+// 1️⃣ Whitelist con tu dominio
 const whitelist = [
-  process.env.URL_FRONTEND,     
-       // e.g. 'https://sunrfrontend.vercel.app'        // para tu dev local
-]
+  process.env.URL_FRONTEND,    // https://sunrfrontend.vercel.app
+];
 
-// 2️⃣ Opciones de CORS que cubran todas las rutas y el preflight
+// 2️⃣ Opciones de CORS
 const corsOptions = {
   origin: (origin, callback) => {
-    // permitir si no viene origin (Postman, server2server) o si está en la whitelist
     if (!origin || whitelist.includes(origin)) {
-      return callback(null, true)
+      return callback(null, true);
     }
-    callback(new Error('Not allowed by CORS'))
+    callback(new Error('Not allowed by CORS'));
   },
-  credentials: true
-}
+  credentials: true,
+};
 
-// 3️⃣ Aplica CORS a todas las peticiones…
-app.use(cors(corsOptions))
+// 3️⃣ Aplica CORS
+app.use(cors(corsOptions));
 
+// 4️⃣ Evita 404 en /favicon.ico
+app.get('/favicon.ico', (req, res) => res.status(204).end());
 
-// 4️⃣ (Opcional) Atrapa el favicon para que no devuelva 404
-app.get('/favicon.ico', (req, res) => res.status(204).end())
+// 5️⃣ Endpoint para saber tu IP de salida
+app.get('/whats-my-ip', async (req, res) => {
+  try {
+    const ip = await fetch('https://ifconfig.me').then(r => r.text());
+    console.log('📡 Mi IP de salida es:', ip);
+    res.send(`IP: ${ip}`);
+  } catch (e) {
+    console.error('Error obteniendo IP:', e);
+    res.status(500).send('Error interno');
+  }
+});
 
-
-// 3) Conectar a MongoDB y montar rutas
+// 6) Conectar a MongoDB y montar rutas
 connectDB()
   .then(() => {
-    // Prefijo /api para todas las rutas
     app.use('/api', authRoutes);
-    app.use('/api', questionRoutes);   // generate-question, submit-answer, score
-    app.use('/api', rankingRoutes);    // /api/ranking
+    app.use('/api', questionRoutes);
+    app.use('/api', rankingRoutes);
 
-    // Ruta base de prueba
     app.get('/', (req, res) => {
       res.send('API de Quiz Médico en funcionamiento');
     });
 
-    // 4) Levantar servidor
     app.listen(PORT, () => {
       console.log(`🚀 Servidor arrancado en puerto ${PORT}`);
     });
