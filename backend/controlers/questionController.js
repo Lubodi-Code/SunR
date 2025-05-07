@@ -15,20 +15,21 @@ const openai = new OpenAI({
 exports.generateQuestion = async (req, res) => {
   try {
     const prompt =
-  "Crea una pregunta de medicina tipo test (fácil o difícil), con 4 opciones (A-D) y una respuesta correcta. Devuélvela en este formato exacto:\n" +
-  "1) Pregunta: <texto>\n" +
-  "2) A) <opción A>\n" +
-  "3) B) <opción B>\n" +
-  "4) C) <opción C>\n" +
-  "5) D) <opción D>\n" +
-  "6) Respuesta: <A|B|C|D>\n\n" +
-  "Ejemplo:\n" +
-  "1) Pregunta: ¿Cuál es el hueso más largo del cuerpo humano?\n" +
-  "2) A) Húmero\n" +
-  "3) B) Fémur\n" +
-  "4) C) Tibia\n" +
-  "5) D) Peroné\n" +
-  "6) Respuesta: B";
+  "Por favor, genera una pregunta de medicina tipo test (A, B, C, D), tanto fáciles como difíciles. " +
+      "Devuélvela exactamente en este formato de 6 líneas:\n" +
+      "1) Pregunta: <texto>\n" +
+      "2) A) <opción A>\n" +
+      "3) B) <opción B>\n" +
+      "4) C) <opción C>\n" +
+      "5) D) <opción D>\n" +
+      "6) Respuesta correcta: <A|B|C|D>\n\n" +
+      "Ejemplo:\n" +
+      "1) Pregunta: ¿Cuál es el hueso más largo del cuerpo humano?\n" +
+      "2) A) Húmero\n" +
+      "3) B) Fémur\n" +
+      "4) C) Tibia\n" +
+      "5) D) Peroné\n" +
+      "6) Respuesta correcta: B";
 
 
     const response = await openai.chat.completions.create({
