@@ -15,7 +15,7 @@ const openai = new OpenAI({
 exports.generateQuestion = async (req, res) => {
   try {
     const prompt =
-  "Por favor, genera **una sola** pregunta de medicina tipo test (fácil o  muy difícil) con 4 opciones (A-D) y una respuesta correcta. " +
+  "Por favor, genera **una sola** pregunta de medicina, biología, organica tipo test (fácil o  muy difícil) con 4 opciones (A-D) y una respuesta correcta. " +
   "Devuélvela exactamente en este formato de 6 líneas, sin más texto:\n" +
   "1) Pregunta: <texto>\n" +
   "2) A) <opción A>\n" +
